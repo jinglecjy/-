@@ -1,14 +1,155 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>jquery下拉选择框</title>
-	<meta charset="utf-8">
-	<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+    <title>jquery下拉选择框</title>
+    <style type="text/css">
+        /* 多选输入显示框样式 */
+        .multi-select {
+            margin-top: 20px;
+            position: relative;
+            width: 300px;
+        }
+        input.in {
+            display: inline-block;
+            box-sizing: border-box;
+            height: 30px;
+            width: 300px;
+            outline: none;
+            /* border: none; */
+        }
+        input.in:focus {
+            outline: none;
+        }
+        .triangle {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border: 10px solid #808080;
+            border-color: #808080 transparent transparent transparent;
+            position: absolute;
+            top: 10px;
+            right: 8px;
+        }   
+        .rotate-180 {
+            transform-origin:center 25%; //旋转中心正中间
+            transform: rotate(180deg);
+            -webkit-transform: rotate(180deg);
+            -moz-transform: rotate(180deg);
+            -ms-transform: rotate(180deg);
+            -o-transform: rotate(180deg);
+            transition: transform 0.2s;
+            -moz-transition: -moz-transform 0.2s; 
+            -moz-transition: -moz-transform 0.2s; 
+            -o-transition: -o-transform 0.2s; 
+            -ms-transition: -ms-transform 0.2s; 
+        }
+        .rotate180 {
+            transform-origin:center 25%;
+            transform: rotate(0deg);
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transition: transform 0.2s;
+            -moz-transition: -moz-transform 0.2s; 
+            -moz-transition: -moz-transform 0.2s; 
+            -o-transition: -o-transform 0.2s; 
+            -ms-transition: -ms-transform 0.2s; 
+        }
+        /* 多选下拉框样式 */
+        ul.multi-select-sub {
+            list-style-type: none;
+            border: 1px solid #AAA;
+            box-sizing: border-box;
+            width: 300px;
+            margin-top: -2px;
+            padding: 0px;
+        }
+        li {
+            padding: 10px;
+            box-sizing: border-box;
+            width: 100%;
+            position: relative;
+        }
+        li:hover {
+            background-color: #56718F;
+        }
+        /* 显示对勾 */
+        div.display-check {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            width: 10px;
+            height: 3px;
+            border: 5px solid black;
+            border-color: transparent transparent #AAA #AAA;
+            border-radius: 10px;
+            transform:rotate(-45deg);
+            -ms-transform:rotate(-45deg);   /* IE 9 */
+            -moz-transform:rotate(-45deg);  /* Firefox */
+            -webkit-transform:rotate(-45deg); /* Safari 和 Chrome */
+            -o-transform:rotate(-45deg);    /* Opera */
+        }
+    </style>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var welfareArr = [];
+            $(".multi-select").click(function(event) {
+                /* 小箭头旋转 */
+                if($(".triangle").hasClass('rotate180')) {
+                    $(".triangle").removeClass('rotate180');
+                    $(".triangle").addClass('rotate-180');
+                }
+                else if($(".triangle").hasClass('rotate-180')) {
+                    $(".triangle").removeClass('rotate-180');
+                    $(".triangle").addClass('rotate180');
+                }
+                else {
+                    $(".triangle").addClass('rotate-180');
+                }
+                /* 显示下拉框 */
+                if($(".multi-select-sub").css('display') == "none"){
+                    $(".multi-select-sub").css('display', 'block');
+                }
+                else {
+                    $(".multi-select-sub").css('display', 'none');
+                }
+            }); 
+            $("li.multi-select-ele").click(function(event) {
+                // 当元素已经被选取过了，再次点击即取消选取
+                if($(this).hasClass('selected')){
+                    // 设置元素className
+                    $(this).removeClass('selected');
+                    // 隐藏表示选中的原点
+                    $(this).find('.display-check').attr("class", "not-display-check");
+                    // 从数组中删除对应元素
+                    // 按照常理，列表中的内容应该都是不一致的，所以这里简单的根据内容删除
+                    welfareArr.splice($.inArray($(this).text(), welfareArr), 1);
+                }
+                else{
+                    $(this).addClass('selected');
+                    $(this).find(".not-display-check").attr("class", "display-check");
+                    welfareArr.push($(this).text());
+                }
+                $("input.in").val(welfareArr.join(','));
+            });
+        });
+    </script>
 </head>
 <body>
-
-	<script type="text/javascript">
-
-	</script>
+    <form action="" method="post">
+        <div class="multi-select">
+            <input name="welfare" class="in" readonly="readonly" />
+            <div class="triangle"></div>
+        </div>
+        <ul class="multi-select-sub" style="display: none;">
+            <li class="multi-select-ele">test1<div class="not-display-check"></div></li>
+            <li class="multi-select-ele">test2<div class="not-display-check"></div></li>
+            <li class="multi-select-ele">test3<div class="not-display-check"></div></li>
+            <li class="multi-select-ele">test4<div class="not-display-check"></div></li>
+        </ul>
+    </form>
 </body>
 </html>
